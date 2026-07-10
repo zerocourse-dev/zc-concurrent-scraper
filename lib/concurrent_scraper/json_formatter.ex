@@ -23,9 +23,14 @@ defmodule ConcurrentScraper.JsonFormatter do
     {:noreply, %{state | examples: [example | state.examples]}}
   end
 
-  def handle_cast({:suite_finished, %{run: run, failures: failures}}, state) do
+  # ExUnit >= 1.12 sends {:suite_finished, times_us} where times_us is
+  # %{run: _, async: _, load: _} — there is NO :failures key, so we count
+  # failures from the examples we collected ourselves.
+  def handle_cast({:suite_finished, times_us}, state) when is_map(times_us) do
     total = length(state.examples)
     passed = Enum.count(state.examples, &(&1.status == "passed"))
+    failures = Enum.count(state.examples, &(&1.status == "failed"))
+    run = times_us[:run] || 0
 
     result = %{
       version: "ZeroCourse ExUnit JSON Formatter",

@@ -13,7 +13,9 @@ defmodule ConcurrentScraper.Scraper do
   then to_json.
   """
 
-  alias ConcurrentScraper.{HtmlParser, UrlTracker}
+  # As you implement, you will want:
+  #   alias ConcurrentScraper.{HtmlParser, UrlTracker}
+  # (left commented so the skeleton compiles clean under --warnings-as-errors)
 
   @doc """
   Scrape a single page: fetch it, parse HTML, extract info.
